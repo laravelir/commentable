@@ -1,6 +1,6 @@
 <?php
 
-namespace Vendor\Package\Traits;
+namespace Laravelir\Commentable\Traits;
 
 use Webpatser\Uuid\Uuid;
 

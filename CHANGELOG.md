@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to `vendor/package` will be documented in this file.
+All notable changes to `laravelir/commentable` will be documented in this file.
 
 ### 0.1.1 - 2021-12-02
 

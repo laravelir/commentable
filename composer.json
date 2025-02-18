@@ -1,7 +1,7 @@
 {
-    "name": "miladimos/package-skeleton",
-    "description": "test description",
-    "homepage": "https://github.com/miladimos/package-skeleton",
+    "name": "laravelir/commentable",
+    "description": "a commenting package for laravel",
+    "homepage": "https://github.com/laravelir/commentable",
     "type": "library",
     "version": "0.1.0",
     "keywords": [
@@ -10,7 +10,8 @@
         "laravel support",
         "lumen packages",
         "laravel packages",
-        "lumen support"
+        "laravel comment",
+        "comments"
     ],
     "authors": [
         {
@@ -22,7 +23,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Vendor\\Package\\": "src/"
+            "Laravelir\\Commentable\\": "src/"
         },
         "files": [
             "./src/helpers.php"
@@ -30,16 +31,16 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Vendor\\Package\\Tests\\": "tests"
+            "Laravelir\\Commentable\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Package\\Package\\Providers\\PackageServiceProvider"
+                "Commentable\\Commentable\\Providers\\CommentableServiceProvider"
             ],
             "aliases": {
-                "Package": "Vendor\\Package\\Facades\\Package"
+                "Commentable": "Laravelir\\Commentable\\Facades\\Commentable"
             }
         }
     },
