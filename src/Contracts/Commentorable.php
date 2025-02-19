@@ -2,12 +2,11 @@
 
 namespace Laravelir\Commentable\Contracts;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 interface Commentator
 {
-    /**
-     * Check if a comment for a specific model needs to be approved.
-     * @param mixed $model
-     * @return bool
-     */
+    public function comments(): MorphMany;
+
     public function needsCommentApproval($model): bool;
 }

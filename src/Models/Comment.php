@@ -3,17 +3,21 @@
 namespace Laravelir\Commentable\Models;
 
 use Exception;
+use Webpatser\Uuid\Uuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Webpatser\Uuid\Uuid;
+use Laravelir\Commentable\Events\CommentCreated;
+use Laravelir\Commentable\Events\CommentDeleted;
+use Laravelir\Commentable\Events\CommentUpdated;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Comment extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'commentable';
+    protected $table = 'commentable_comments';
 
     protected $guarded = [];
 
@@ -43,15 +47,6 @@ class Comment extends Model
             if (config('comments.delete_replies_along_comments')) {
                 $model->comments()->delete();
             }
-        });
-
-
-        static::deleted(function (self $model) {
-            CommentDeleted::dispatch($model);
-        });
-
-        static::created(function (self $model) {
-            CommentAdded::dispatch($model);
         });
     }
 
@@ -83,6 +78,11 @@ class Comment extends Model
     public function children()
     {
         return $this->hasMany(Comment::get('social.comments.model'), 'parent_id', 'id');
+    }
+
+    public function reactions(): MorphMany
+    {
+        return $this->morphMany(Reaction::class, 'owner');
     }
 
     public function parent()
