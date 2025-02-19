@@ -5,7 +5,7 @@ namespace Laravelir\Commentable\Traits;
 use Laravelir\Commentable\Models\Comment;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-trait CanComment
+trait Commentorable
 {
     public static function booted()
     {
@@ -16,15 +16,12 @@ trait CanComment
 
     public function mustBeCommentApprove(): bool
     {
-        return config('social.comments.need_approve') ?? true;
+        return config('laravelir.commentable.need_approve') ?? true;
     }
 
-    /**
-     * @return string
-     */
     public function commentableModel()
     {
-        return config('social.comments.model');
+        return config('laravelir.commentable.model');
     }
 
     public function comments()

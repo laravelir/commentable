@@ -27,12 +27,7 @@ trait Commentable
         return config('social.comments.model');
     }
 
-    /**
-     * Return all comments for this model.
-     *
-     * @return MorphMany
-     */
-    public function comments()
+    public function comments(): MorphMany
     {
         return $this->commentsRelation();
     }

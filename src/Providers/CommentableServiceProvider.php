@@ -64,6 +64,13 @@ class CommentableServiceProvider extends ServiceProvider
         ], 'commentable-migrations');
     }
 
+    // protected function definePermissions()
+    // {
+    //     foreach (Config::get('comments.permissions', []) as $permission => $policy) {
+    //         Gate::define($permission, $policy);
+    //     }
+    // }
+
     // private function registerRoutes()
     // {
     //     Route::group($this->routeConfiguration(), function () {

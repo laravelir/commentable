@@ -5,11 +5,14 @@ namespace Laravelir\Commentable\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Miladimos\Commentable\Traits\RouteKeyNameUUID;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Webpatser\Uuid\Uuid;
 
 class Comment extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'commentable';
 
     protected $guarded = [];
@@ -21,15 +24,44 @@ class Comment extends Model
         'approved_at' => 'date'
     ];
 
+    protected $dispatchesEvents = [
+        'created' => CommentCreated::class,
+        'updated' => CommentUpdated::class,
+        'deleted' => CommentDeleted::class,
+    ];
+
+    public static function boot(): void
+    {
+        parent::boot();
+
+
+        self::creating(function ($model) {
+            $model->uuid = (string)Uuid::generate(4);
+        });
+
+        static::deleting(function (self $model) {
+            if (config('comments.delete_replies_along_comments')) {
+                $model->comments()->delete();
+            }
+        });
+
+
+        static::deleted(function (self $model) {
+            CommentDeleted::dispatch($model);
+        });
+
+        static::created(function (self $model) {
+            CommentAdded::dispatch($model);
+        });
+    }
+
+
     public function commentorable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * @return mixed
-     * model
-     */
+
     public function commentable(): MorphTo
     {
         return $this->morphTo();
