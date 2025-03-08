@@ -37,7 +37,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Commentable\\Commentable\\Providers\\CommentableServiceProvider"
+                "Laravelir\\Commentable\\Providers\\CommentableServiceProvider"
             ],
             "aliases": {
                 "Commentable": "Laravelir\\Commentable\\Facades\\Commentable"

@@ -16,4 +16,9 @@ class Reaction extends Model
     protected $table = 'commentable_reactions';
 
     protected $guarded = [];
+
+    public function comment()
+    {
+        $this->belongsTo(Comment::class);
+    }
 }

@@ -23,30 +23,18 @@ class Comment extends Model
 
     protected $with = ['children', 'commentator', 'commentable'];
 
-    protected $casts = [
-        'approved' => 'boolean',
-        'approved_at' => 'date'
-    ];
-
-    protected $dispatchesEvents = [
-        'created' => CommentCreated::class,
-        'updated' => CommentUpdated::class,
-        'deleted' => CommentDeleted::class,
-    ];
+    // protected $dispatchesEvents = [
+    //     'created' => CommentCreated::class,
+    //     'updated' => CommentUpdated::class,
+    //     'deleted' => CommentDeleted::class,
+    // ];
 
     public static function boot(): void
     {
         parent::boot();
 
-
         self::creating(function ($model) {
             $model->uuid = (string)Uuid::generate(4);
-        });
-
-        static::deleting(function (self $model) {
-            if (config('comments.delete_replies_along_comments')) {
-                $model->comments()->delete();
-            }
         });
     }
 
@@ -82,7 +70,7 @@ class Comment extends Model
 
     public function reactions(): MorphMany
     {
-        return $this->morphMany(Reaction::class, 'owner');
+        return $this->morphMany(Reaction::class, 'commentorable');
     }
 
     public function parent()
@@ -103,7 +91,6 @@ class Comment extends Model
     public function approve()
     {
         $this->update([
-            'is_approved' => true,
             'approved_at' => now(),
         ]);
 
@@ -113,7 +100,6 @@ class Comment extends Model
     public function disapprove()
     {
         $this->update([
-            'is_approved' => false,
             'approved_at' => null,
         ]);
 

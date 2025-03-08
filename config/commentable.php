@@ -8,9 +8,9 @@ return [
     /**
      * Comment owner model
      * Must extend Illuminate\Contracts\Auth\Authenticatable
-     * Must implement LakM\Comments\Contracts\CommenterContract
+     * Must implement Laravelir\Comments\Contracts\CommenterContract
      */
-    'user_model' => User::class,
+    'user_model' => App\Models\User::class,
 
     /**
      * To extend the base Comment model one just needs to create a new
@@ -27,18 +27,10 @@ return [
         'create-comment' => [CommentPolicy::class, 'create'],
         'update-comment' => [CommentPolicy::class, 'update'],
         'delete-comment' => [CommentPolicy::class, 'delete'],
-        'create-reply' => [ReplyPolicy::class, 'create'],
-        'update-reply' => [ReplyPolicy::class, 'update'],
-        'delete-reply' => [ReplyPolicy::class, 'delete'],
+        // 'create-reply' => [ReplyPolicy::class, 'create'],
+        // 'update-reply' => [ReplyPolicy::class, 'update'],
+        // 'delete-reply' => [ReplyPolicy::class, 'delete'],
     ],
-
-    /**
-     * The Comment Controller.
-     * Change this to your own implementation of the CommentController.
-     * You can use the \Laravelista\Comments\CommentControllerInterface
-     * or extend the \Laravelista\Comments\CommentController.
-     */
-    'controller' => '\Laravelista\Comments\WebCommentController',
 
 
     /**

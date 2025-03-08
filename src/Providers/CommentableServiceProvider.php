@@ -19,14 +19,14 @@ class CommentableServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . "/../../config/commentable.php", 'commentable');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
-
         $this->registerFacades();
     }
 
     public function boot(): void
     {
         $this->registerCommands();
+        $this->registerConfig();
+        $this->registerMigrations();
         // $this->registerRoutes();
         // $this->registerBladeDirectives();
         // $this->registerLivewireComponents();
@@ -49,18 +49,18 @@ class CommentableServiceProvider extends ServiceProvider
         }
     }
 
-    protected function publishConfig()
+    protected function registerConfig()
     {
         $this->publishes([
             __DIR__ . '/../../config/commentable.php' => config_path('commentable.php')
         ], 'commentable-config');
     }
 
-    protected function publishMigrations()
+    protected function registerMigrations()
     {
         $timestamp = date('Y_m_d_His', time());
         $this->publishes([
-            __DIR__ . '/../database/migrations/create_tables_table.php.stub.php' => database_path() . "/migrations/{$timestamp}_commentable_tables.php",
+            __DIR__ . '/../database/migrations/create_commentable_table.stub.php' => database_path() . "/migrations/{$timestamp}_commentable_table.php",
         ], 'commentable-migrations');
     }
 
