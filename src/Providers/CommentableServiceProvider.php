@@ -2,15 +2,9 @@
 
 namespace Laravelir\Commentable\Providers;
 
-use App\Http\Kernel;
-use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravelir\Commentable\Facades\Commentable;
 use Laravelir\Commentable\Console\Commands\InstallPackageCommand;
-use Laravelir\Commentable\Console\Commands\InstallCommentableCommand;
 
 class CommentableServiceProvider extends ServiceProvider
 {
@@ -27,9 +21,6 @@ class CommentableServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerConfig();
         $this->registerMigrations();
-        // $this->registerRoutes();
-        // $this->registerBladeDirectives();
-        // $this->registerLivewireComponents();
     }
 
     private function registerFacades()
@@ -60,30 +51,7 @@ class CommentableServiceProvider extends ServiceProvider
     {
         $timestamp = date('Y_m_d_His', time());
         $this->publishes([
-            __DIR__ . '/../database/migrations/create_commentable_table.stub.php' => database_path() . "/migrations/{$timestamp}_commentable_table.php",
+            __DIR__ . '/../../database/migrations/create_commentable_table.stub.php' => database_path() . "/migrations/{$timestamp}_commentable_table.php",
         ], 'commentable-migrations');
     }
-
-    // protected function definePermissions()
-    // {
-    //     foreach (Config::get('comments.permissions', []) as $permission => $policy) {
-    //         Gate::define($permission, $policy);
-    //     }
-    // }
-
-    // private function registerRoutes()
-    // {
-    //     Route::group($this->routeConfiguration(), function () {
-    //         $this->loadRoutesFrom(__DIR__ . '/../../routes/commentable.php', 'commentable-routes');
-    //     });
-    // }
-
-    // private function routeConfiguration()
-    // {
-    //     return [
-    //         'prefix' => config('commentable.routes.prefix'),
-    //         'middleware' => config('commentable.routes.middleware'),
-    //         'as' => 'commentable.'
-    //     ];
-    // }
 }
