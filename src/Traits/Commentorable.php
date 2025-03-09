@@ -16,12 +16,12 @@ trait Commentorable
 
     public function mustBeCommentApprove(): bool
     {
-        return config('laravelir.commentable.need_approve') ?? true;
+        return config('commentable.need_approve') ?? true;
     }
 
     public function commentableModel()
     {
-        return config('laravelir.commentable.model');
+        return config('commentable.model');
     }
 
     public function comments()
@@ -39,7 +39,7 @@ trait Commentorable
         return $this->morphMany($this->commentableModel(), 'commentorable')->where('approved', true);
     }
 
-    public function comment(Commentable $commentable, string $commentText = '', int $rate = 0): Comment
+    public function commentFor(Commentable $commentable, string $commentText = '', int $rate = 0): Comment
     {
         $commentModel = $this->commentableModel();
 
@@ -56,46 +56,33 @@ trait Commentorable
         return $comment;
     }
 
+    public function comment($data, Model $creator, Model $parent = null)
+    {
+        $commentableModel = $this->commentableModel();
 
-    //     /**
-    //  * @param $data
-    //  * @param Model      $creator
-    //  * @param Model|null $parent
-    //  *
-    //  * @return static
-    //  */
-    // public function comment($data, Model $creator, Model $parent = null)
-    // {
-    //     $commentableModel = $this->commentableModel();
+        $comment = (new $commentableModel())->createComment($this, $data, $creator);
 
-    //     $comment = (new $commentableModel())->createComment($this, $data, $creator);
+        if (!empty($parent)) {
+            $parent->appendNode($comment);
+        }
 
-    //     if (!empty($parent)) {
-    //         $parent->appendNode($comment);
-    //     }
+        return $comment;
+    }
 
-    //     return $comment;
-    // }
+    public function commentAsUser(?Model $user, string $comment)
+    {
+        $commentClass = $this->commentableModel();
 
-    // public function comment(string $comment, $guard = 'web')
-    // {
-    //     return $this->commentAsUser(auth($guard)->user(), $comment);
-    // }
+        $comment = new $commentClass([
+            'comment' => $comment,
+            'approved' => ($user instanceof User) ? !$user->mustBeCommentApprove($this) : false,
+            'commentor_id' => is_null($user) ? null : $user->getKey(),
+            'commentable_id' => $this->getKey(),
+            'commentable_type' => get_class(),
+        ]);
 
-    // public function commentAsUser(?Model $user, string $comment)
-    // {
-    //     $commentClass = $this->commentableModel();
-
-    //     $comment = new $commentClass([
-    //         'comment' => $comment,
-    //         'approved' => ($user instanceof User) ? !$user->mustBeCommentApprove($this) : false,
-    //         'commentor_id' => is_null($user) ? null : $user->getKey(),
-    //         'commentable_id' => $this->getKey(),
-    //         'commentable_type' => get_class(),
-    //     ]);
-
-    //     return $this->comments()->save($comment);
-    // }
+        return $this->comments()->save($comment);
+    }
 
     public function hasComments(Commentable $commentable): bool
     {
@@ -107,8 +94,4 @@ trait Commentorable
             ->exists();
     }
 
-    private function primaryId(): string
-    {
-        return (string)$this->getAttribute($this->primaryKey);
-    }
 }

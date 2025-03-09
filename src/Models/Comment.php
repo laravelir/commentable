@@ -21,7 +21,7 @@ class Comment extends Model
 
     protected $guarded = [];
 
-    protected $with = ['children', 'commentator', 'commentable'];
+    protected $with = ['children', 'commentorable', 'commentable'];
 
     // protected $dispatchesEvents = [
     //     'created' => CommentCreated::class,
@@ -38,22 +38,17 @@ class Comment extends Model
         });
     }
 
-
     public function commentorable(): MorphTo
     {
         return $this->morphTo();
     }
-
 
     public function commentable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    /**
-     * @return bool
-     */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return $this->children()->count() > 0;
     }
@@ -65,22 +60,22 @@ class Comment extends Model
 
     public function children()
     {
-        return $this->hasMany(Comment::get('social.comments.model'), 'parent_id', 'id');
-    }
-
-    public function reactions(): MorphMany
-    {
-        return $this->morphMany(Reaction::class, 'commentorable');
+        return $this->hasMany(config('commentable.model'), 'parent_id', 'id');
     }
 
     public function parent()
     {
-        return $this->belongsTo(Comment::get('social.comments.model'), 'id', 'parent_id');
+        return $this->belongsTo(config('commentable.model'), 'id', 'parent_id');
     }
 
-    public function scopeApproved(Builder $query, $approved): Builder
+    // public function reactions(): MorphMany
+    // {
+    //     return $this->morphMany(Reaction::class, 'commentorable');
+    // }
+
+    public function scopeApproved(Builder $query): Builder
     {
-        return $query->where('approved', $approved);
+        return $query->where('approved_at', '!=', null);
     }
 
     public function setCommentAttribute($value)
@@ -104,24 +99,5 @@ class Comment extends Model
         ]);
 
         return $this;
-    }
-
-
-    // public function commentator()
-    // {
-    //     return $this->belongsTo($this->getAuthModelName(), 'user_id');
-    // }
-    //
-    protected function getAuthModelName()
-    {
-        if (config('comments.user_model')) {
-            return config('comments.user_model');
-        }
-
-        if (!is_null(config('auth.providers.users.model'))) {
-            return config('auth.providers.users.model');
-        }
-
-        throw new Exception('Could not determine the commentator model name.');
     }
 }

@@ -27,7 +27,6 @@ Laravelir\Commentable\Providers\CommentableServiceProvider::class,
 php artisan commentable:install
 ```
 
-
 ## Testing
 
 ```bash

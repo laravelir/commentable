@@ -19,12 +19,12 @@ trait Commentable
 
     public function mustBeCommentApprove(): bool
     {
-        return config('social.comments.need_approve') ?? true;
+        return config('commentable.need_approve') ?? true;
     }
 
     public function commentableModel(): string
     {
-        return config('social.comments.model');
+        return config('commentable.model');
     }
 
     public function comments(): MorphMany
@@ -39,28 +39,8 @@ trait Commentable
 
     public function approvedComments()
     {
-        return $this->morphMany($this->commentableModel(), 'commentable')->where('approved', true);
+        return $this->morphMany($this->commentableModel(), 'commentable')->where('approved_at', '!=', null);
     }
-
-    //     /**
-    //  * @param $data
-    //  * @param Model      $creator
-    //  * @param Model|null $parent
-    //  *
-    //  * @return static
-    //  */
-    // public function comment($data, Model $creator, Model $parent = null)
-    // {
-    //     $commentableModel = $this->commentableModel();
-
-    //     $comment = (new $commentableModel())->createComment($this, $data, $creator);
-
-    //     if (!empty($parent)) {
-    //         $parent->appendNode($comment);
-    //     }
-
-    //     return $comment;
-    // }
 
     public function comment(string $comment, $guard = 'web')
     {
@@ -69,7 +49,7 @@ trait Commentable
 
     public function commentAsUser(?Model $user, string $comment)
     {
-        $commentClass = config('social.comments.model');
+        $commentClass = config('commentable.model');
 
         $comment = new $commentClass([
             'comment' => $comment,
@@ -82,42 +62,6 @@ trait Commentable
         return $this->comments()->save($comment);
     }
 
-    public function canBeRated(): bool
-    {
-        return config('social.comments.has_rate') ?? false;
-    }
-
-    public function averageRate(int $round = 2): float
-    {
-        if (!$this->canBeRated()) {
-            return 0;
-        }
-
-        $rates = $this->comments()->approvedComments();
-
-        if (!$rates->exists()) {
-            return 0;
-        }
-
-        return round((float)$rates->avg('rate'), $round);
-    }
-
-    public function totalCommentsCount(): int
-    {
-        if (!$this->mustBeApproved()) {
-            return $this->comments()->count();
-        }
-
-        return $this->comments()->approvedComments()->count();
-    }
-
-    /**
-     * @param $id
-     * @param $data
-     * @param Model|null $parent
-     *
-     * @return mixed
-     */
     public function updateComment($id, $data, Model $parent = null)
     {
         $commentableModel = $this->commentableModel();
@@ -131,11 +75,6 @@ trait Commentable
         return $comment;
     }
 
-    /**
-     * @param $id
-     *
-     * @return mixed
-     */
     public function deleteComment($id): bool
     {
         $commentableModel = $this->commentableModel();
@@ -143,11 +82,14 @@ trait Commentable
         return (bool) (new $commentableModel())->forceDelete($id);
     }
 
-    /**
-     * @return mixed
-     */
+
     public function commentCount(): int
     {
         return $this->comments()->count();
+        if (!$this->mustBeApproved()) {
+            return $this->comments()->count();
+        }
+
+        return $this->comments()->approvedComments()->count();
     }
 }

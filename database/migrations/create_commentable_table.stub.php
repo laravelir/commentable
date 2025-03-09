@@ -21,18 +21,18 @@ return new class extends Migration
             $table->index(["commentable_type", "commentable_id"]);
         });
 
-        Schema::create('commentable_reactions', function (Blueprint $table) {
-            $table->id();
-            $table->morphs('commentorable'); // user
-            $table->foreignIdFor(Comment::class, 'comment_id');
-            $table->char('type', 1);
-            $table->timestamps();
-        });
+        // Schema::create('commentable_reactions', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->morphs('commentorable'); // user
+        //     $table->foreignIdFor(Comment::class, 'comment_id');
+        //     $table->char('type', 1);
+        //     $table->timestamps();
+        // });
     }
 
     public function down()
     {
         Schema::dropIfExists('commentable_comments');
-        Schema::dropIfExists('commentable_reactions');
+        // Schema::dropIfExists('commentable_reactions');
     }
 };

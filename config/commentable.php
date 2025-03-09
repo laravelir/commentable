@@ -8,9 +8,10 @@ return [
     /**
      * Comment owner model
      * Must extend Illuminate\Contracts\Auth\Authenticatable
-     * Must implement Laravelir\Comments\Contracts\CommenterContract
+     * or
+     * config('auth.providers.users.model')
      */
-    'user_model' => App\Models\User::class,
+    'user_model' => config('auth.providers.users.model'),
 
     /**
      * To extend the base Comment model one just needs to create a new
@@ -31,22 +32,4 @@ return [
         // 'update-reply' => [ReplyPolicy::class, 'update'],
         // 'delete-reply' => [ReplyPolicy::class, 'delete'],
     ],
-
-
-    /**
-     * By default comments posted are marked as approved. If you want
-     * to change this, set this option to true. Then, all comments
-     * will need to be approved by setting the `approved` column to
-     * `true` for each comment.
-     *
-     * To see only approved comments use this code in your view:
-     *
-     *     @comments([
-     *         'model' => $book,
-     *         'approved' => true
-     *     ])
-     *
-     */
-    'approval_required' => false,
-
 ];
