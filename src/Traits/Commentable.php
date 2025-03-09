@@ -40,12 +40,12 @@ trait Commentable
     {
         $commentClass = config('commentable.model');
 
-        $comment = new $commentClass([
+        $comment = $commentClass::create([
             'comment' => $comment,
             // 'approved' => ($user instanceof User) ? !$user->mustBeCommentApprove($this) : false,
-            'commentable_id' => $this->getKey(),
+            'commentable_id' => $this->id,
             'commentable_type' => get_class($this),
-            'commentorable_id'   => $user->primaryId(),
+            'commentorable_id'   => $user->id,
             'commentorable_type' => get_class($user),
         ]);
 

@@ -3,7 +3,7 @@
     "description": "a commenting package for laravel",
     "homepage": "https://github.com/laravelir/commentable",
     "type": "library",
-    "version": "0.1.0",
+    "version": "0.1.5",
     "keywords": [
         "laravel",
         "laravel-package",

@@ -9,3 +9,4 @@ All notable changes to `laravelir/commentable` will be documented in this file.
 #### Edited
 
 #### Fixed
+https://github.com/Lakshan-Madushanka/laravel-comments

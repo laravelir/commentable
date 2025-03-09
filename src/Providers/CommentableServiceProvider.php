@@ -51,7 +51,7 @@ class CommentableServiceProvider extends ServiceProvider
     {
         $timestamp = date('Y_m_d_His', time());
         $this->publishes([
-            __DIR__ . '/../../database/migrations/create_commentable_table.stub.php' => database_path() . "/migrations/{$timestamp}_commentable_table.php",
+            __DIR__ . '/../../database/migrations/create_commentable_table.stub.php' => database_path() . "/migrations/{$timestamp}_create_commentable_table.php",
         ], 'commentable-migrations');
     }
 }

@@ -33,9 +33,9 @@ class Comment extends Model
     {
         parent::boot();
 
-        self::creating(function ($model) {
-            $model->uuid = (string)Uuid::generate(4);
-        });
+        // self::creating(function ($model) {
+        //     $model->uuid = (string)Uuid::generate(4);
+        // });
     }
 
     public function commentorable(): MorphTo

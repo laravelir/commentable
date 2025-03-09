@@ -18,7 +18,6 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
-            $table->index(["commentable_type", "commentable_id"]);
         });
 
         // Schema::create('commentable_reactions', function (Blueprint $table) {
