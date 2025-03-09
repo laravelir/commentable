@@ -2,7 +2,6 @@
 
 namespace Laravelir\Commentable\Traits;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
@@ -15,11 +14,6 @@ trait Commentable
                 $comment->delete();
             }
         });
-    }
-
-    public function mustBeCommentApprove(): bool
-    {
-        return config('commentable.need_approve') ?? true;
     }
 
     public function commentableModel(): string
@@ -39,57 +33,23 @@ trait Commentable
 
     public function approvedComments()
     {
-        return $this->morphMany($this->commentableModel(), 'commentable')->where('approved_at', '!=', null);
+        return $this->morphMany($this->commentableModel(), 'commentable')->approved();
     }
 
-    public function comment(string $comment, $guard = 'web')
-    {
-        return $this->commentAsUser(auth($guard)->user(), $comment);
-    }
-
-    public function commentAsUser(?Model $user, string $comment)
+    public function commentAs(Model $user, string $comment)
     {
         $commentClass = config('commentable.model');
 
         $comment = new $commentClass([
             'comment' => $comment,
-            'approved' => ($user instanceof User) ? !$user->mustBeCommentApprove($this) : false,
-            'commentor_id' => is_null($user) ? null : $user->getKey(),
+            // 'approved' => ($user instanceof User) ? !$user->mustBeCommentApprove($this) : false,
             'commentable_id' => $this->getKey(),
-            'commentable_type' => get_class(),
+            'commentable_type' => get_class($this),
+            'commentorable_id'   => $user->primaryId(),
+            'commentorable_type' => get_class($user),
         ]);
-
-        return $this->comments()->save($comment);
-    }
-
-    public function updateComment($id, $data, Model $parent = null)
-    {
-        $commentableModel = $this->commentableModel();
-
-        $comment = (new $commentableModel())->updateComment($id, $data);
-
-        if (!empty($parent)) {
-            $parent->appendNode($comment);
-        }
 
         return $comment;
     }
 
-    public function deleteComment($id): bool
-    {
-        $commentableModel = $this->commentableModel();
-
-        return (bool) (new $commentableModel())->forceDelete($id);
-    }
-
-
-    public function commentCount(): int
-    {
-        return $this->comments()->count();
-        if (!$this->mustBeApproved()) {
-            return $this->comments()->count();
-        }
-
-        return $this->comments()->approvedComments()->count();
-    }
 }
