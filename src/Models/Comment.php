@@ -73,6 +73,11 @@ class Comment extends Model
     //     return $this->morphMany(Reaction::class, 'commentorable');
     // }
 
+    // public function ratings(): MorphMany
+    // {
+    //     return $this->morphMany(Rating::class, 'rateorable');
+    // }
+
     public function scopeApproved(Builder $query): Builder
     {
         return $query->where('approved_at', '!=', null);

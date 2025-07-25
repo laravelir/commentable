@@ -51,5 +51,4 @@ trait Commentable
 
         return $comment;
     }
-
 }

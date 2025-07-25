@@ -15,6 +15,7 @@ return new class extends Migration
             $table->morphs('commentorable'); // user
             $table->morphs('commentable'); // model
             $table->text('comment');
+            $table->boolean('is_approved')->default(false);
             $table->timestamp('approved_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
@@ -25,6 +26,14 @@ return new class extends Migration
         //     $table->morphs('commentorable'); // user
         //     $table->foreignIdFor(Comment::class, 'comment_id');
         //     $table->char('type', 1);
+        //     $table->timestamps();
+        // });
+
+        // Schema::create('commentable_ratings', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->morphs('rateorable'); // user
+        //     $table->morphs('ratingable'); // model
+        // $table->unsignedInteger('rating');
         //     $table->timestamps();
         // });
     }
